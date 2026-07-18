@@ -50,6 +50,24 @@
     revealed.forEach(function (el) { el.classList.add("is-visible"); });
   }
 
+  /* Testimonial rotators: one centered quote at a time, click through.
+     Without JS all quotes stay visible (no .is-ready). */
+  document.querySelectorAll("[data-rotator]").forEach(function (rot) {
+    var quotes = Array.prototype.slice.call(rot.querySelectorAll(".quote"));
+    if (quotes.length < 2) return;
+    var count = rot.querySelector(".rotator-count");
+    var i = 0;
+    function show(n) {
+      i = (n + quotes.length) % quotes.length;
+      quotes.forEach(function (q, k) { q.classList.toggle("is-active", k === i); });
+      if (count) count.textContent = (i + 1) + " / " + quotes.length;
+    }
+    rot.querySelector("[data-prev]").addEventListener("click", function () { show(i - 1); });
+    rot.querySelector("[data-next]").addEventListener("click", function () { show(i + 1); });
+    rot.classList.add("is-ready");
+    show(0);
+  });
+
   /* Footer year */
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();
